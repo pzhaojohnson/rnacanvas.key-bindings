@@ -40,17 +40,18 @@ Key bindings do not become active until their `owner` property has been set,
 which stores a reference to the element that the key binding belongs to.
 
 Setting the `owner` property of a key binding to the document body, for instance,
-will cause the key binding to apply to the whole webpage.
+will bind the key binding to the entire webpage.
 
 ```javascript
-// have the key binding apply to the whole webpage
+// bind the key binding to the entire webpage
 keyBinding.owner = document.body;
 
 // deactivate the key binding
 keyBinding.owner = undefined;
 ```
 
-Key bindings can only possibly be triggered when their owner element has focus.
+Key bindings can only possibly be triggered when their owner element has focus
+and is the target of the necessary keyboard events.
 
 Any element can be made focusable using the `tabindex` HTML property
 (see the [MDN docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex) to learn more).
