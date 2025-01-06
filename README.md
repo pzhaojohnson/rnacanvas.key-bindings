@@ -36,7 +36,7 @@ The above key binding will not be triggered by `Ctrl+Shift+A`, for instance.
 
 ### `owner`
 
-Key bindings do not become active until their `owner` property is set,
+Key bindings don't become active until their `owner` property is set,
 which stores a reference to the element that the key binding belongs to.
 
 Setting the `owner` property of a key binding to the document body, for instance,
