@@ -60,7 +60,7 @@ Any element can be made focusable using the `tabindex` HTML property
 // not focusable by default
 var ele = document.createElement('div');
 
-// the element is now focusable
+// make the element focusable
 ele.tabIndex = 0;
 
 keyBinding.owner = ele;
