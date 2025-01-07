@@ -56,6 +56,8 @@ and is the target of the appropriate keyboard events.
 Any element can be made focusable using the `tabindex` HTML property
 (see the [MDN docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex) to learn more).
 
+<b>Note that the</b> `tabindex` <b>property is often disabled by default in Safari.</b>
+
 ```javascript
 // not focusable by default
 var ele = document.createElement('div');
