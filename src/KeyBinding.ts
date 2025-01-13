@@ -51,7 +51,9 @@ export class KeyBinding {
 
   #handleKeyDown(event: KeyboardEvent) {
     if (
-      event.key.toUpperCase() === this.key.toUpperCase()
+      this.owner
+      && this.owner === document.activeElement
+      && event.key.toUpperCase() === this.key.toUpperCase()
       && event.altKey === this.#altKey
       && event.ctrlKey === this.#ctrlKey
       && event.metaKey === this.#metaKey

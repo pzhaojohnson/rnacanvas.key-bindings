@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import { KeyBinding } from './KeyBinding';
 
 describe('`class KeyBinding`', () => {
@@ -10,13 +14,31 @@ describe('`class KeyBinding`', () => {
     var owner = new ElementMock();
     kb.owner = owner;
 
-    owner.dispatchEvent(new EventMock('keydown', { key: 'S' }));
-    owner.dispatchEvent(new EventMock('keydown', { key: 'S', altKey: true }));
-    owner.dispatchEvent(new EventMock('keydown', { key: 'S', metaKey: true }));
-    expect(onKeyDown).not.toHaveBeenCalled();
+    Object.defineProperty(document, 'activeElement', { value: owner, writable: true });
 
     owner.dispatchEvent(new EventMock('keydown', { key: 'S', altKey: true, metaKey: true }));
     expect(onKeyDown).toHaveBeenCalledTimes(1);
+
+    // incorrect modifying keys
+    owner.dispatchEvent(new EventMock('keydown', { key: 'S' }));
+    owner.dispatchEvent(new EventMock('keydown', { key: 'S', altKey: true }));
+    owner.dispatchEvent(new EventMock('keydown', { key: 'S', metaKey: true }));
+
+    // not called a second time
+    expect(onKeyDown).toHaveBeenCalledTimes(1);
+
+    // the owner element is not focused
+    document.activeElement = new ElementMock();
+
+    owner.dispatchEvent(new EventMock('keydown', { key: 'S', altKey: true, metaKey: true }));
+
+    // not called a second time
+    expect(onKeyDown).toHaveBeenCalledTimes(1);
+
+    document.activeElement = owner;
+
+    owner.dispatchEvent(new EventMock('keydown', { key: 'S', altKey: true, metaKey: true }));
+    expect(onKeyDown).toHaveBeenCalledTimes(2);
 
     // prevents default event responses
     var event = new EventMock('keydown', { key: 'S', altKey: true, metaKey: true });
@@ -27,14 +49,14 @@ describe('`class KeyBinding`', () => {
 
     // lowercase key
     owner.dispatchEvent(new EventMock('keydown', { key: 's', altKey: true, metaKey: true }));
-    expect(onKeyDown).toHaveBeenCalledTimes(3);
+    expect(onKeyDown).toHaveBeenCalledTimes(4);
 
     // extra modifying keys
     owner.dispatchEvent(new EventMock('keydown', { key: 'S', altKey: true, metaKey: true, ctrlKey: true }));
     owner.dispatchEvent(new EventMock('keydown', { key: 'S', altKey: true, metaKey: true, shiftKey: true }));
 
-    // not called a fourth time
-    expect(onKeyDown).toHaveBeenCalledTimes(3);
+    // not called a fifth time
+    expect(onKeyDown).toHaveBeenCalledTimes(4);
   });
 
   test('`get owner()`', () => {
@@ -53,6 +75,8 @@ describe('`class KeyBinding`', () => {
     var owner1 = new ElementMock();
     kb.owner = owner1;
 
+    Object.defineProperty(document, 'activeElement', { value: owner1, writable: true });
+
     owner1.dispatchEvent(new EventMock('keydown', { key: 'G' }));
     expect(onKeyDown).toHaveBeenCalledTimes(1);
 
@@ -62,6 +86,8 @@ describe('`class KeyBinding`', () => {
     // unbinds the key binding from owner 1
     owner1.dispatchEvent(new EventMock('keydown', { key: 'G' }));
     expect(onKeyDown).toHaveBeenCalledTimes(1);
+
+    document.activeElement = owner2;
 
     owner2.dispatchEvent(new EventMock('keydown', { key: 'G' }));
     expect(onKeyDown).toHaveBeenCalledTimes(2);
